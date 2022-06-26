@@ -2,6 +2,7 @@
 #define GREATEST_EVOLUTIONARY_ALGORITHM_LIBRARY_EVER
 
 #include <climits>
+#include <limits>
 
 
 namespace geale
@@ -163,6 +164,56 @@ void BinaryDecoder<T, BitArray>::Decode(size_t startBitPosition, T& value, const
 		int bitValue;
 		bitArray.ReadBit(startBitPosition + i, bitValue);
 		value |= (bitValue << i);
+	}
+}
+
+template <typename T, typename BitArray>
+class DecimalEncoder
+{
+public:
+	void Encode(size_t startBitPosition, const T& value, BitArray& bitArray);
+};
+
+template <typename T, typename BitArray>
+void DecimalEncoder<T, BitArray>::Encode(size_t startBitPosition, const T& value, BitArray& bitArray)
+{
+	int digits10 = std::numeric_limits<T>::digits10() + 1;
+	T = value;
+	for (size_t i = 0; i < digits10; i++)
+	{
+		int currentDigit = value % 10;
+		// TODO: use BinaryEncoder here.
+		bitArray.WriteOrAppendBit(startBitPosition + i * 3, currentDigit & 1);
+		bitArray.WriteOrAppendBit(startBitPosition + i * 3 + 1, (currentDigit & 2) >> 1);
+		bitArray.WriteOrAppendBit(startBitPosition + i * 3 + 2, (currentDigit & 4) >> 2);
+		bitArray.WriteOrAppendBit(startBitPosition + i * 3 + 3, (currentDigit & 8) >> 3);
+		value /= 10;
+	}
+}
+
+template <typename T, typename BitArray>
+class DecimalDecoder
+{
+public:
+	void Decode(size_t startBitPosition, T& value, const BitArray& bitArray);
+};
+
+template <typename T, typename BitArray>
+void DecimalDecoder<T, BitArray>::Decode(size_t startBitPosition, T& value, const BitArray& bitArray)
+{
+	int digits10 = std::numeric_limits<T>::digits10() + 1;
+	value = 0;
+	for (size_t i = digits10 - 1; i >= 0; i--)
+	{
+		value *= 10;
+		int currentDigit = value % 10;
+		int bit0, bit1, bit2, bit3;
+		// TODO: use BinaryDecoder here.
+		bitArray.ReadBit(startBitPosition + i * 3, bit0);
+		bitArray.ReadBit(startBitPosition + i * 3 + 1, bit1);
+		bitArray.ReadBit(startBitPosition + i * 3 + 2, bit2);
+		bitArray.ReadBit(startBitPosition + i * 3 + 3, bit3);
+		value += bit3 * 8 + bit2 * 4 + bit1 * 2 + bit0;
 	}
 }
 
