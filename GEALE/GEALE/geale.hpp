@@ -133,14 +133,14 @@ size_t BitArrayAdapter<Container, IndexConverter>::GetLastWriteBitPositionPlus1(
 
 
 template <typename T, typename BitArray>
-class BinaryEncoder
+class BitByBitEncoder
 {
 public:
 	void Encode(size_t startBitPosition, const T& value, BitArray& bitArray);
 };
 
 template <typename T, typename BitArray>
-void BinaryEncoder<T, BitArray>::Encode(size_t startBitPosition, const T& value, BitArray& bitArray)
+void BitByBitEncoder<T, BitArray>::Encode(size_t startBitPosition, const T& value, BitArray& bitArray)
 {
 	for (size_t i = 0; i < CHAR_BIT * sizeof(T); i++)
 	{
@@ -149,14 +149,14 @@ void BinaryEncoder<T, BitArray>::Encode(size_t startBitPosition, const T& value,
 }
 
 template <typename T, typename BitArray>
-class BinaryDecoder
+class BitByBitDecoder
 {
 public:
 	void Decode(size_t startBitPosition, T& value, const BitArray& bitArray);
 };
 
 template <typename T, typename BitArray>
-void BinaryDecoder<T, BitArray>::Decode(size_t startBitPosition, T& value, const BitArray& bitArray)
+void BitByBitDecoder<T, BitArray>::Decode(size_t startBitPosition, T& value, const BitArray& bitArray)
 {
 	value = 0;
 	for (size_t i = 0; i < CHAR_BIT * sizeof(T); i++)
